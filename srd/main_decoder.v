@@ -8,6 +8,7 @@ module main_decoder (
     output       ALUSrc,
     output       RegWrite,
     output       Jump,
+    output       is_jalr,
     output       SrcASelect,
     output [1:0] ALUOp,
     output [2:0] BranchType, // distinguishes between beq, bne, etc. based on funct3
@@ -19,20 +20,20 @@ module main_decoder (
     // Control bits: {RegWrite, SrcASelect, ALUSrc, MemWrite, ResultSrc, Branch, ALUOp, Jump, BranchType, LoadType}
     always @(*) begin
         case (op)
-            7'b0110011: controls = 18'b1_0_0_0_00_0_10_0_xxx_xxx; // R-Type
-            7'b0010011: controls = 18'b1_0_1_0_00_0_10_0_xxx_xxx; // I-Type ALU
-            7'b0000011: controls = {1'b1, 1'b0, 1'b1, 1'b0, 2'b01, 1'b0, 2'b00, 1'b0, 3'bxxx, funct3}; // Load
-            7'b0100011: controls = 18'b0_0_1_1_00_0_00_0_xxx_xxx; // sw
-            7'b1100011: controls = {1'b0, 1'b0, 1'b0, 1'b0, 2'b00, 1'b1, 2'b01, 1'b0, funct3, 3'bxxx}; // B-Type
-            7'b1101111: controls = 18'b1_0_0_0_10_0_00_1_xxx_xxx; // jal
-            7'b1100111: controls = 18'b1_0_1_0_10_0_00_1_xxx_xxx; // jalr
-            7'b0110111: controls = 18'b1_0_1_0_00_0_10_0_xxx_xxx; // LUI
-            7'b0010111: controls = 18'b1_1_1_0_00_0_10_0_xxx_xxx; // AUIPC
+            7'b0110011: controls = 18'b1_0_0_0_00_0_10_0_xxx_xxx_0; // R-Type
+            7'b0010011: controls = 18'b1_0_1_0_00_0_10_0_xxx_xxx_0; // I-Type ALU
+            7'b0000011: controls = {1'b1, 1'b0, 1'b1, 1'b0, 2'b01, 1'b0, 2'b00, 1'b0, 3'bxxx, funct3,1'b0}; // Load
+            7'b0100011: controls = 18'b0_0_1_1_00_0_00_0_xxx_xxx_0; // sw
+            7'b1100011: controls = {1'b0, 1'b0, 1'b0, 1'b0, 2'b00, 1'b1, 2'b01, 1'b0, funct3, 3'bxxx,1'b0}; // B-Type
+            7'b1101111: controls = 18'b1_0_0_0_10_0_00_1_xxx_xxx_0; // jal
+            7'b1100111: controls = 18'b1_0_1_0_10_0_00_1_xxx_xxx_1; // jalr
+            7'b0110111: controls = 18'b1_0_1_0_00_0_10_0_xxx_xxx_0; // LUI
+            7'b0010111: controls = 18'b1_1_1_0_00_0_10_0_xxx_xxx_0; // AUIPC
             default:    controls = 18'hxxxxx;
         endcase
     end
 
-    assign {RegWrite, SrcASelect, ALUSrc, MemWrite, ResultSrc, Branch, ALUOp, Jump, BranchType, LoadType} = controls;
+    assign {RegWrite, SrcASelect, ALUSrc, MemWrite, ResultSrc, Branch, ALUOp, Jump, BranchType, LoadType,is_jalr} = controls;
 
 endmodule
 
