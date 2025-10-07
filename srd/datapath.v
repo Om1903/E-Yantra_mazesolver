@@ -6,6 +6,7 @@ module datapath (
     input        PCSrc, ALUSrc, SrcASelect, RegWrite,
     input  [3:0] ALUControl,
     input  [2:0] LoadType,
+    input        is_jalr , 
     output       Zero,
     output       LessThanS, LessThanU,
     output [31:0] PC,
@@ -17,6 +18,7 @@ module datapath (
 
     wire [31:0] PCNext, PCPlus4, PCTarget, SrcA, SrcB, WriteData, ALUResult, RD1;
     reg  [31:0] ImmExt;
+    wire [31:0] PC_modified;
     reg [31:0] LoadData; 
 
     // --- Internal Immediate Generation ---
@@ -33,8 +35,9 @@ module datapath (
 
     // --- PC and Register File Logic (No Change) ---
     reset_ff #(32) pcreg(clk, reset, PCNext, PC);
+    mux2 #(32)   pc_select_jal(PC,SrcA,is_jalr ,PC_modified);
     adder        pcadd4(PC, 32'd4, PCPlus4);
-    adder        pcaddbranch(PC, ImmExt, PCTarget);
+    adder        pcaddbranch(PC_modified, ImmExt, PCTarget);
     mux2 #(32)   pcmux(PCPlus4, PCTarget, PCSrc, PCNext);
     reg_file     rf ( .clk(clk), .reset(reset), .wr_en(RegWrite), .rd_addr1(Instr[19:15]), .rd_addr2(Instr[24:20]), .wr_addr(Instr[11:7]), .wr_data(Result), .rd_data1(RD1), .rd_data2(WriteData));
 
