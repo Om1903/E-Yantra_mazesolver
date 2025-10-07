@@ -12,7 +12,8 @@ module controller (
     output       Jump,
     output       SrcASelect,
     output [3:0] ALUControl,
-    output [2:0] LoadType 
+    output [2:0] LoadType ,
+    output        is_jalr
 );
 
     wire [1:0] ALUOp;
@@ -23,7 +24,7 @@ module controller (
     main_decoder md (
         .op(op), .funct3(funct3), .ResultSrc(ResultSrc), .MemWrite(MemWrite),
         .Branch(Branch), .ALUSrc(ALUSrc), .RegWrite(RegWrite), .Jump(Jump),
-        .SrcASelect(SrcASelect), .ALUOp(ALUOp), .BranchType(BranchType), .LoadType(LoadType)
+        .SrcASelect(SrcASelect), .ALUOp(ALUOp), .BranchType(BranchType), .LoadType(LoadType), .is_jalr(is_jalr)
     );
 
     alu_decoder ad (
