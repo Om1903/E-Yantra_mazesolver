@@ -90,19 +90,19 @@ initial begin
 end
 
 // test the book asm program
-// always @(negedge clk) begin
-//    # 5;
-    // if(MemWrite && !reset) begin
-        // if(DataAdr === 100 & WriteData === 25) begin
-            // $display("Simulation succeeded");
-            // $stop;
-        // end
-  /*      else if (DataAdr !== 96) begin
+always @(negedge clk) begin
+    # 5;
+     if(MemWrite && !reset) begin
+         if(DataAdr === 100 & WriteData === 25) begin
+             $display("Simulation succeeded");
+             $stop;
+        end
+        else if (DataAdr !== 96) begin
             $display("Simulation failed");
             $stop;
-        end */
-    // end 
-// end
+        end 
+    end 
+end
 
  // always @(negedge clk) begin
  //     case(PC)
