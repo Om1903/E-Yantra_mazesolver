@@ -13,17 +13,15 @@ module alu_decoder (
     output reg [3:0] ALUControl
 );
 
-// Combinational block to generate the final ALUControl signal.
+
 always @(*) begin
-    // The primary decoding is based on the high-level ALUOp from the main decoder.
+   
     case (ALUOp)
-        // For memory access (lw, sw), the ALU must perform an addition for address calculation.
-        2'b00: ALUControl = 4'b0010; // ADD
+        
+        2'b00: ALUControl = 4'b0010; // ADD(for address calculation)
+        2'b01: ALUControl = 4'b0011; // SUB(for branch instructions)
 
-        // For branch instructions (beq, bne, etc.), the ALU performs a subtraction for comparison.
-        2'b01: ALUControl = 4'b0011; // SUB
-
-        // For R-type and I-type ALU instructions, further decoding of funct3 is required.
+        // For R-type and I-type
         2'b10: begin
             case (funct3)
                 // Differentiated by funct7b5 and opb5 to handle ADD/ADDI vs SUB.
