@@ -17,7 +17,6 @@ module alu #(parameter WIDTH = 32) (
     output              LessThanU
 );
 
-// Combinational block to compute the ALU result based on the control signal.
 always @(*) begin
     case (alu_ctrl)
         4'b0000: alu_out = a & b;                   // AND
@@ -26,25 +25,25 @@ always @(*) begin
         4'b0011: alu_out = a - b;                   // SUBTRACT
         4'b0100: alu_out = a ^ b;                   // XOR
         
-        // RISC-V ISA specifies using only the lower 5 bits of the second operand for shift amounts.
-        4'b0101: alu_out = a << b[4:0];             // Shift Left Logical (SLL)
-        4'b0110: alu_out = a >> b[4:0];             // Shift Right Logical (SRL)
+        // using only the lower 5 bits shift amounts.
+        4'b0101: alu_out = a << b[4:0];             // SLL
+        4'b0110: alu_out = a >> b[4:0];             //  SRL
         
-        // Arithmetic right shift requires casting 'a' as signed to preserve the sign bit.
-        4'b0111: alu_out = $signed(a) >>> b[4:0];   // Shift Right Arithmetic (SRA)
+     
+        4'b0111: alu_out = $signed(a) >>> b[4:0];  //SRA
 
-        // Signed comparison requires casting both operands to ensure a two's complement comparison.
-        4'b1000: alu_out = ($signed(a) < $signed(b)) ? 1 : 0; // Set Less Than (SLT, Signed)
+    
+        4'b1000: alu_out = ($signed(a) < $signed(b)) ? 1 : 0; // (SLT, Signed)
         
-        // Unsigned comparison is the default behavior for vectors in Verilog.
-        4'b1001: alu_out = (a < b) ? 1 : 0;                   // Set Less Than (SLTU, Unsigned)
+        
+        4'b1001: alu_out = (a < b) ? 1 : 0;                   // (SLTU)
 
         default: alu_out = 32'hxxxxxxxx;
     endcase
 end
 
 
-// For 'beq' and 'bne' instructions.
+// For 'beq' and 'bne'
 assign Zero = (a == b);
 
 // For 'blt' and 'bge' instructions (signed branches).
