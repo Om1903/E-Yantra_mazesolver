@@ -6,7 +6,7 @@
 //              based on control signals from the controller.
 //////////////////////////////////////////////////////////////////////////////////
 module datapath (
-    // Control Inputs from Controller
+ 
     input        clk, reset,
     input  [1:0] ResultSrc,
     input        PCSrc, ALUSrc, SrcASelect, RegWrite,
@@ -32,9 +32,7 @@ module datapath (
     wire [31:0] PC_modified;
     reg  [31:0] LoadData;
 
-    // --- Internal Immediate Generation ---
-    // This block generates the correct 32-bit sign-extended immediate value
-    // based on the instruction format, determined by the opcode.
+ 
     always @(*) begin
         case (Instr[6:0])
             7'b0000011, 7'b1100111, 7'b0010011: ImmExt = {{20{Instr[31]}}, Instr[31:20]}; // I-Type
@@ -46,7 +44,7 @@ module datapath (
         endcase
     end
 
-    // --- PC Update Logic ---
+  
     reset_ff #(32) pcreg(clk, reset, PCNext, PC);
     adder        pcadd4(PC, 32'd4, PCPlus4);
     
@@ -55,9 +53,9 @@ module datapath (
     mux2 #(32)   pc_select_jal(PC, SrcA, is_jalr, PC_modified);
     
     adder        pcaddbranch(PC_modified, ImmExt, PCTarget);
-    mux2 #(32)   pcmux(PCPlus4, PCTarget, PCSrc, PCNext); // this mux decides whether to take PC+4 or PC Target based on select line PSSrc
+    mux2 #(32)   pcmux(PCPlus4, PCTarget, PCSrc, PCNext); // this mux decides whether to take PC+4 or PC Target based on select line PCSrc
 
-    // --- Register File and ALU Logic ---
+   
     reg_file     rf ( .clk(clk), .reset(reset), .wr_en(RegWrite), .rd_addr1(Instr[19:15]), .rd_addr2(Instr[24:20]), .wr_addr(Instr[11:7]), .wr_data(Result), .rd_data1(RD1), .rd_data2(WriteData));
     
     // Selects the first ALU operand. For AUIPC, it selects the PC.
@@ -68,8 +66,8 @@ module datapath (
     
     alu          alu (SrcA, SrcB, ALUControl, ALUResult, Zero, LessThanS, LessThanU);
 
-    // --- Load Unit Logic ---
-    // This block correctly handles partial-word loads (lhu, lh, lbu, lb).
+
+    // (lhu, lh, lbu, lb).
     // It extracts the correct byte/halfword from the 32-bit word read from memory,
   always @(*) begin
         case (LoadType)
@@ -93,11 +91,11 @@ module datapath (
             default: LoadData = ReadData;
         endcase
     end
-    // --- Write-Back Mux ---
-    // Selects the final value to be written back into the register file.
+    
+    //  Write-Back Mux 
     mux3 #(32)   resultmux(ALUResult, LoadData, PCPlus4, ResultSrc, Result);
 
-    // --- Outputs to Data Memory ---
+
     assign Mem_WrData = WriteData;
     assign Mem_WrAddr = ALUResult;
 endmodule
