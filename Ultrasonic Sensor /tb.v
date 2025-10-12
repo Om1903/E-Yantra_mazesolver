@@ -85,7 +85,7 @@ module tb();
         #10001100;
         exp_trig = 1;
         i = i + 1;
-        #30000;
+        #10000;
         exp_trig = 0;
         @(posedge clk_50M);
         exp_distance_out = 0;
