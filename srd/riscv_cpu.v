@@ -7,10 +7,7 @@
 //              data memories.
 //////////////////////////////////////////////////////////////////////////////////
 module riscv_cpu (
-    // Core I/O
     input        clk, reset,
-
-    // Interface to Instruction Memory
     output [31:0] PC,       
     input  [31:0] Instr,  
     output        MemWrite,
