@@ -24,32 +24,29 @@ module main_decoder (
     output [2:0] LoadType
 );
 
-    // This internal register holds all control signals in a packed format to simplify the case statement logic.
-    reg [18:0] controls;
-
-    // Combinational block to generate control signals based on the opcode.
+    reg [16:0] controls;
     always @(*) begin
         case (op)
-            7'b0110011: controls = 19'b1_0_0_0_00_0_10_0_xxx_xxx_0; // R-Type
-            7'b0010011: controls = 19'b1_0_1_0_00_0_10_0_xxx_xxx_0; // I-Type ALU
+            7'b0110011: controls = 17'b1_0_0_0_00_0_10_0_xxx_xxx_0; // R-Type
+            7'b0010011: controls = 17'b1_0_1_0_00_0_10_0_xxx_xxx_0; // I-Type ALU
             
             // For Loads, the specific type (lw, lh, etc.) is determined by funct3.
             7'b0000011: controls = {1'b1, 1'b0, 1'b1, 1'b0, 2'b01, 1'b0, 2'b00, 1'b0, 3'bxxx, funct3, 1'b0}; // Load
             
-            7'b0100011: controls = 19'b0_0_1_1_00_0_00_0_xxx_xxx_0; // S-Type (sw)
+            7'b0100011: controls = 17'b0_0_1_1_00_0_00_0_xxx_xxx_0; // S-Type (sw)
             
             // For Branches, the specific type (beq, bne, etc.) is determined by funct3.
             7'b1100011: controls = {1'b0, 1'b0, 1'b0, 1'b0, 2'b00, 1'b1, 2'b01, 1'b0, funct3, 3'bxxx, 1'b0}; // B-Type
             
-            7'b1101111: controls = 19'b1_0_0_0_10_0_00_1_xxx_xxx_0; // J-Type (jal)
+            7'b1101111: controls = 17'b1_0_0_0_10_0_00_1_xxx_xxx_0; // J-Type (jal)
             
             // For JALR, the 'is_jalr' signal is asserted to enable special datapath logic.
-            7'b1100111: controls = 19'b1_0_1_0_10_0_00_1_xxx_xxx_1; // I-Type (jalr)
+            7'b1100111: controls = 17'b1_0_1_0_10_0_00_1_xxx_xxx_1; // I-Type (jalr)
             
-            7'b0110111: controls = 19'b1_0_1_0_00_0_10_0_xxx_xxx_0; // U-Type (LUI)
-            7'b0010111: controls = 19'b1_1_1_0_00_0_10_0_xxx_xxx_0; // U-Type (AUIPC)
+            7'b0110111: controls = 17'b1_0_1_0_00_0_10_0_xxx_xxx_0; // U-Type (LUI)
+            7'b0010111: controls = 17'b1_1_1_0_00_0_10_0_xxx_xxx_0; // U-Type (AUIPC)
             
-            default:    controls = 19'h7ffff; 
+            default:    controls = 17'hxxxxx; 
         endcase
     end
 
