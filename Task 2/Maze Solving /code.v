@@ -29,7 +29,7 @@ reg [2:0] state;
 
 parameter rows = 9;
 parameter columns = 9;
-parameter IDLE = 0, MOVE_FORWARD = 1, 
+parameter IDLE = 0, MOVE_FORWARD = 1, MOVE_BACK = 2, TURN_LEFT = 3, TURN_RIGHT = 4;
 
 always @(posedge clk) begin 
 	if (rst_n == 0) begin
@@ -37,7 +37,38 @@ always @(posedge clk) begin
 		state <= IDLE;
 	end
 	else begin 
-		
+		case (state) 
+			IDLE: begin
+				state <= MOVE_FORWARD;
+				move <= 3'd1;
+			end
+			MOVE_FORWARD: begin
+				if (mid && right) begin
+					state <= TURN_LEFT;
+					move <= 3'd2;
+				end
+				else if (mid && left) begin
+					state <= TURN_RIGHT;
+					move <= 3'd3;
+				end
+				else if (mid && left && right) begin
+					state <= MOVE_BACK;
+					move <= 3'd4;
+				end
+				else begin
+					move <= 3'd1;
+				end
+			end
+			TURN_LEFT: begin
+				
+			end
+			TURN_RIGHT: begin
+				
+			end
+			MOVE_BACK: begin
+				
+			end
+		endcase
 	end
 
 //////////////////DO NOT MAKE ANY CHANGES BELOW THIS LINE //////////////////
