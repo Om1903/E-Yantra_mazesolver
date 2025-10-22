@@ -43,17 +43,29 @@ always @(posedge clk) begin
 				state <= CONDITIONS;
 			end
 			CONDITIONS: begin
-				if (mid && right) begin
+			   if (mid && left && right) begin
+					move <= 3'd4;
+					state <= MOVE_BACK;
+				end
+				else if (mid && right) begin
 					move <= 3'd2;
 					state <= TURN_LEFT;
 				end
 				else if (mid && left) begin
 					move <= 3'd3;
 					state <= TURN_RIGHT;
+				end				
+				else if (mid) begin
+					move <= 3'd2;
+					state <= TURN_LEFT;
 				end
-				else if (mid && left && right) begin
-					move <= 3'd4;
-					state <= MOVE_BACK;
+				else if (left) begin
+					move <= 3'd3
+					state <= TURN_RIGHT;
+				end
+				else if (right) begin
+					move <= 3'd2;
+					state <= TURN_LEFT;
 				end
 				else begin
 					move <= 3'd1;
