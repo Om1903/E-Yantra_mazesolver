@@ -60,13 +60,16 @@ always @(posedge clk) begin
 				end
 			end
 			TURN_LEFT: begin
-				
+				state <= MOVE_FORWARD;
+				move <= 3'd1;
 			end
 			TURN_RIGHT: begin
-				
+				state <= MOVE_FORWARD;
+				move <= 3'd1;
 			end
 			MOVE_BACK: begin
-				
+				state <= MOVE_FORWARD;
+				move <= 3'd1;
 			end
 		endcase
 	end
