@@ -29,7 +29,7 @@ reg [2:0] state;
 
 parameter rows = 9;
 parameter columns = 9;
-parameter IDLE = 0, CONDITIONS = 1, MOVE_BACK = 2, TURN_LEFT = 3, TURN_RIGHT = 4;
+parameter IDLE = 0, FACING_NORTH = 1, FACING_SOUTH = 2, FACING_EAST = 3, FACING_WEST = 4;
 
 always @(posedge clk) begin 
 	if (rst_n == 0) begin
@@ -40,48 +40,123 @@ always @(posedge clk) begin
 		case (state) 
 			IDLE: begin				
 				move <= 3'd1;
-				state <= CONDITIONS;
+				state <= FACING_NORTH;
 			end
-			CONDITIONS: begin
+			FACING_NORTH: begin
 			   if (mid && left && right) begin
 					move <= 3'd4;
-					state <= MOVE_BACK;
+					state <= FACING_SOUTH;
 				end
 				else if (mid && right) begin
 					move <= 3'd2;
-					state <= TURN_LEFT;
+					state <= FACING_WEST;
 				end
 				else if (mid && left) begin
 					move <= 3'd3;
-					state <= TURN_RIGHT;
+					state <= FACING_EAST;
 				end				
 				else if (mid) begin
 					move <= 3'd2;
-					state <= TURN_LEFT;
+					state <= FACING_WEST;
 				end
-				else if (left) begin
-					move <= 3'd3
-					state <= TURN_RIGHT;
+				else if (left) begin	
+					move <= 3'd3;
+					state <= FACING_EAST;
 				end
 				else if (right) begin
 					move <= 3'd2;
-					state <= TURN_LEFT;
+					state <= FACING_WEST;					
 				end
 				else begin
 					move <= 3'd1;
 				end
 			end
-			TURN_LEFT: begin
-				move <= 3'd1;
-				state <= CONDITIONS;				
+			FACING_SOUTH: begin
+				if (mid && left && right) begin
+					move <= 3'd4;
+					state <= FACING_NORTH;
+				end
+				else if (mid && right) begin
+					move <= 3'd2;
+					state <= FACING_EAST;
+				end
+				else if (mid && left) begin
+					move <= 3'd3;
+					state <= FACING_WEST;
+				end				
+				else if (mid) begin
+					move <= 3'd2;
+					state <= FACING_EAST;
+				end
+				else if (left) begin	
+					move <= 3'd3;
+					state <= FACING_WEST;
+				end
+				else if (right) begin
+					move <= 3'd2;
+					state <= FACING_EAST;					
+				end
+				else begin
+					move <= 3'd1;
+				end
 			end
-			TURN_RIGHT: begin
-				move <= 3'd1;
-				state <= CONDITIONS;				
+			FACING_EAST: begin
+				if (mid && left && right) begin
+					move <= 3'd4;
+					state <= FACING_WEST;
+				end
+				else if (mid && right) begin
+					move <= 3'd2;
+					state <= FACING_NORTH;
+				end
+				else if (mid && left) begin
+					move <= 3'd3;
+					state <= FACING_SOUTH;
+				end				
+				else if (mid) begin
+					move <= 3'd2;
+					state <= FACING_NORTH;
+				end
+				else if (left) begin	
+					move <= 3'd3;
+					state <= FACING_SOUTH;
+				end
+				else if (right) begin
+					move <= 3'd2;
+					state <= FACING_NORTH;					
+				end
+				else begin
+					move <= 3'd1;
+				end
 			end
-			MOVE_BACK: begin				
-				move <= 3'd1;
-				state <= CONDITIONS;
+			FACING_WEST: begin				
+				if (mid && left && right) begin
+					move <= 3'd4;
+					state <= FACING_EAST;
+				end
+				else if (mid && right) begin
+					move <= 3'd2;
+					state <= FACING_SOUTH;
+				end
+				else if (mid && left) begin
+					move <= 3'd3;
+					state <= FACING_NORTH;
+				end				
+				else if (mid) begin
+					move <= 3'd2;
+					state <= FACING_SOUTH;
+				end
+				else if (left) begin	
+					move <= 3'd3;
+					state <= FACING_NORTH;
+				end
+				else if (right) begin
+					move <= 3'd2;
+					state <= FACING_SOUTH;					
+				end
+				else begin
+					move <= 3'd1;
+				end
 			end
 		endcase
 	end
