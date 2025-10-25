@@ -24,12 +24,23 @@ DEADENDS    : 9
 */
 //////////////////DO NOT MAKE ANY CHANGES ABOVE THIS LINE //////////////////
 
+wire [6:0] current_index;
 reg [2:0] state;
+reg [3:0] i;
+reg [3:0] j;
+reg [1:0] visit_count [0:80];
 
+assign current_index = j * 9 + i;
+
+initial begin 
+	i = 4;
+	j = 8;
+	state = IDLE;
+end 
 
 parameter rows = 9;
 parameter columns = 9;
-parameter IDLE = 0, FACING_NORTH = 1, FACING_SOUTH = 2, FACING_EAST = 3, FACING_WEST = 4;
+parameter IDLE = 0, FACING_NORTH = 1, FACING_SOUTH = 2, FACING_EAST = 3, FACING_WEST = 4, EXIT_FOUND = 5;
 
 always @(posedge clk) begin 
 	if (rst_n == 0) begin
@@ -45,117 +56,145 @@ always @(posedge clk) begin
 			FACING_NORTH: begin
 			   if (mid && left && right) begin
 					move <= 3'd4;
+					j <= j + 1;
 					state <= FACING_SOUTH;
 				end
 				else if (mid && right) begin
 					move <= 3'd2;
+					i <= i - 1;
 					state <= FACING_WEST;
 				end
 				else if (mid && left) begin
 					move <= 3'd3;
+					i <= i + 1;
 					state <= FACING_EAST;
 				end				
 				else if (mid) begin
 					move <= 3'd2;
+					i <= i - 1;
 					state <= FACING_WEST;
 				end
 				else if (left) begin	
 					move <= 3'd3;
+					i <= i + 1;
 					state <= FACING_EAST;
 				end
 				else if (right) begin
 					move <= 3'd2;
+					i <= i - 1;
 					state <= FACING_WEST;					
 				end
 				else begin
 					move <= 3'd1;
+					j <= j - 1;
 				end
 			end
 			FACING_SOUTH: begin
 				if (mid && left && right) begin
 					move <= 3'd4;
+					j <= j - 1;
 					state <= FACING_NORTH;
 				end
 				else if (mid && right) begin
 					move <= 3'd2;
+					i <= i + 1;
 					state <= FACING_EAST;
 				end
 				else if (mid && left) begin
 					move <= 3'd3;
+					i <= i - 1;
 					state <= FACING_WEST;
 				end				
 				else if (mid) begin
 					move <= 3'd2;
+					i <= i + 1;
 					state <= FACING_EAST;
 				end
 				else if (left) begin	
 					move <= 3'd3;
+					i <= i - 1;
 					state <= FACING_WEST;
 				end
 				else if (right) begin
 					move <= 3'd2;
+					i <= i + 1;
 					state <= FACING_EAST;					
 				end
 				else begin
 					move <= 3'd1;
+					j <= j + 1;
 				end
 			end
 			FACING_EAST: begin
 				if (mid && left && right) begin
 					move <= 3'd4;
+					i <= i - 1;
 					state <= FACING_WEST;
 				end
 				else if (mid && right) begin
 					move <= 3'd2;
-					state <= FACING_NORTH;
+					j <= j - 1;
+					state <= FACING_NORTH;					
 				end
 				else if (mid && left) begin
 					move <= 3'd3;
+					j <= j + 1;
 					state <= FACING_SOUTH;
 				end				
 				else if (mid) begin
 					move <= 3'd2;
+					j <= j - 1;
 					state <= FACING_NORTH;
 				end
 				else if (left) begin	
 					move <= 3'd3;
-					state <= FACING_SOUTH;
+					j <= j + 1;
+					state <= FACING_SOUTH;					
 				end
 				else if (right) begin
 					move <= 3'd2;
+					j <= j - 1;
 					state <= FACING_NORTH;					
 				end
 				else begin
 					move <= 3'd1;
+					i <= i + 1;
 				end
 			end
 			FACING_WEST: begin				
 				if (mid && left && right) begin
 					move <= 3'd4;
+					i <= i + 1;
 					state <= FACING_EAST;
 				end
 				else if (mid && right) begin
 					move <= 3'd2;
+					j <= j + 1;
 					state <= FACING_SOUTH;
 				end
 				else if (mid && left) begin
 					move <= 3'd3;
+					j <= j - 1;
 					state <= FACING_NORTH;
 				end				
 				else if (mid) begin
 					move <= 3'd2;
+					j <= j + 1;
 					state <= FACING_SOUTH;
 				end
 				else if (left) begin	
 					move <= 3'd3;
+					j <= j - 1;
 					state <= FACING_NORTH;
 				end
 				else if (right) begin
 					move <= 3'd2;
+					j <= j + 1;
 					state <= FACING_SOUTH;					
 				end
 				else begin
 					move <= 3'd1;
+					i <= i - 1;
 				end
 			end
 		endcase
