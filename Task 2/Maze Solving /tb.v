@@ -2,7 +2,7 @@
 
 module tb;
     // set to 1 to enable debug prints
-    parameter debug = 0;
+    parameter debug = 1;
 
     reg clk, rst_n;
     reg left, mid, right;
