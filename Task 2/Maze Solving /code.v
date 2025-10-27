@@ -56,36 +56,36 @@ always @(posedge clk) begin
 			FACING_NORTH: begin
 			   if (mid && left && right) begin
 					move <= 3'd4;
-//					j <= j + 1;
+					j <= j + 1;
 					state <= FACING_SOUTH;					
 				end
-				else if (mid && right) begin
+				else if (!left && mid && right) begin
 					move <= 3'd2;
-//					i <= i - 1;
+					i <= i - 1;
 					visit_count[current_index + 9] <= visit_count[current_index + 9] + 1;
 					state <= FACING_WEST;
 				end
-				else if (mid && left) begin
+				else if (mid && left && !right) begin
 					move <= 3'd3;
-//					i <= i + 1;
+					i <= i + 1;
 					visit_count[current_index + 9] <= visit_count[current_index + 9] + 1;
 					state <= FACING_EAST;
 				end				
-				else if (mid) begin
+				else if (!left && mid && !right) begin
 					move <= 3'd2;
-//					i <= i - 1;
+					i <= i - 1;
 					visit_count[current_index + 9] <= visit_count[current_index + 9] + 1;
 					state <= FACING_WEST;
 				end
-				else if (left) begin	
+				else if (left && !mid && !right) begin	
 					move <= 3'd3;
-//					i <= i + 1;
+					i <= i + 1;
 					visit_count[current_index + 9] <= visit_count[current_index + 9] + 1;
 					state <= FACING_EAST;					
 				end
-				else if (right) begin
+				else if (!left && !mid && right) begin
 					move <= 3'd2;
-//					i <= i - 1;
+					i <= i - 1;
 					visit_count[current_index + 9] <= visit_count[current_index + 9] + 1;			
 					state <= FACING_WEST;							
 				end
@@ -97,36 +97,36 @@ always @(posedge clk) begin
 			FACING_SOUTH: begin
 				if (mid && left && right) begin
 					move <= 3'd4;
-//					j <= j - 1;
+					j <= j - 1;
 					state <= FACING_NORTH;
 				end
-				else if (mid && right) begin
+				else if (!left && mid && right) begin
 					move <= 3'd2;
-//					i <= i + 1;
+					i <= i + 1;
 					visit_count[current_index - 9] <= visit_count[current_index - 9] + 1;
 					state <= FACING_EAST;
 				end
-				else if (mid && left) begin
+				else if (mid && left && !right) begin
 					move <= 3'd3;
-//					i <= i - 1;
+					i <= i - 1;
 					visit_count[current_index - 9] <= visit_count[current_index - 9] + 1;
 					state <= FACING_WEST;
 				end				
-				else if (mid) begin
+				else if (!left && mid && !right) begin
 					move <= 3'd2;
-//					i <= i + 1;
+					i <= i + 1;
 					visit_count[current_index - 9] <= visit_count[current_index - 9] + 1;
 					state <= FACING_EAST;
 				end
-				else if (left) begin	
+				else if (left && !mid && !right) begin	
 					move <= 3'd3;
-//					i <= i - 1;
+					i <= i - 1;
 					visit_count[current_index - 9] <= visit_count[current_index - 9] + 1;
 					state <= FACING_WEST;
 				end
-				else if (right) begin
+				else if (!left && !mid && right) begin
 					move <= 3'd2;
-//					i <= i + 1;
+					i <= i + 1;
 					visit_count[current_index - 9] <= visit_count[current_index - 9] + 1;
 					state <= FACING_EAST;					
 				end
@@ -138,36 +138,36 @@ always @(posedge clk) begin
 			FACING_EAST: begin
 				if (mid && left && right) begin
 					move <= 3'd4;
-//					i <= i - 1;
+					i <= i - 1;
 					state <= FACING_WEST;
 				end
-				else if (mid && right) begin
+				else if (!left && mid && right) begin
 					move <= 3'd2;
-//					j <= j - 1;
+					j <= j - 1;
 					visit_count[current_index - 1] <= visit_count[current_index - 1] + 1;
 					state <= FACING_NORTH;					
 				end
-				else if (mid && left) begin
+				else if (mid && left && !right) begin
 					move <= 3'd3;
-//					j <= j + 1;
+					j <= j + 1;
 					visit_count[current_index - 1] <= visit_count[current_index - 1] + 1;
 					state <= FACING_SOUTH;
 				end				
-				else if (mid) begin
+				else if (!left && mid && !right) begin
 					move <= 3'd2;
-//					j <= j - 1;
+					j <= j - 1;
 					visit_count[current_index - 1] <= visit_count[current_index - 1] + 1;
 					state <= FACING_NORTH;
 				end
-				else if (left) begin	
+				else if (left && !mid && !right) begin	
 					move <= 3'd3;
-//					j <= j + 1;
+					j <= j + 1;
 					visit_count[current_index - 1] <= visit_count[current_index - 1] + 1;
 					state <= FACING_SOUTH;					
 				end
-				else if (right) begin
+				else if (!left && !mid && right) begin
 					move <= 3'd2;
-//					j <= j - 1;
+					j <= j - 1;
 					visit_count[current_index - 1] <= visit_count[current_index - 1] + 1;
 					state <= FACING_NORTH;					
 				end
@@ -179,36 +179,36 @@ always @(posedge clk) begin
 			FACING_WEST: begin				
 				if (mid && left && right) begin
 					move <= 3'd4;
-//					i <= i + 1;
+					i <= i + 1;
 					state <= FACING_EAST;
 				end
-				else if (mid && right) begin
+				else if (!left && mid && right) begin
 					move <= 3'd2;
-//					j <= j + 1;
+					j <= j + 1;
 					visit_count[current_index + 1] <= visit_count[current_index + 1] + 1;
 					state <= FACING_SOUTH;
 				end
-				else if (mid && left) begin
+				else if (mid && left && !right) begin
 					move <= 3'd3;
-//					j <= j - 1;
+					j <= j - 1;
 					visit_count[current_index + 1] <= visit_count[current_index + 1] + 1;
 					state <= FACING_NORTH;
 				end				
-				else if (mid) begin
+				else if (!left && mid && !right) begin
 					move <= 3'd2;
-//					j <= j + 1;
+					j <= j + 1;
 					visit_count[current_index + 1] <= visit_count[current_index + 1] + 1;
 					state <= FACING_SOUTH;
 				end
-				else if (left) begin	
+				else if (left && !mid && !right) begin	
 					move <= 3'd3;
-//					j <= j - 1;
+					j <= j - 1;
 					visit_count[current_index + 1] <= visit_count[current_index + 1] + 1;
 					state <= FACING_NORTH;
 				end
-				else if (right) begin
+				else if (!left && !mid && right) begin
 					move <= 3'd2;
-//					j <= j + 1;
+					j <= j + 1;
 					visit_count[current_index + 1] <= visit_count[current_index + 1] + 1;
 					state <= FACING_SOUTH;					
 				end
