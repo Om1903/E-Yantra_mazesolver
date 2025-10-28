@@ -91,14 +91,15 @@ always @(posedge clk_3125) begin
                 state <= S_STOP;
                 // LOOK-AHEAD: Next state is S_STOP, its output is 1 (Stop Bit)
                 tx <= 1'b1;
-                tx_done <= 1'b1;
+//                tx_done <= 1'b1;
             end
         end
 
         S_STOP: begin
             if (clk_counter < BIT_DURATION - 2) begin
                 clk_counter <= clk_counter + 1;
-            end else begin
+            end 
+				else begin
                 clk_counter <= 0;
                 state <= S_IDLE;
                 // Next state is S_IDLE, its output is 1
