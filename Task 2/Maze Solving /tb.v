@@ -6,9 +6,7 @@ module tb;
 
     reg clk, rst_n;
     reg left, mid, right;
-    wire [2:0] move;
-	wire [3:0] i;
-	wire [3:0] j;
+	wire [2:0] move;
 
     t2c_maze_explorer uut (
         .clk(clk),
@@ -16,9 +14,7 @@ module tb;
         .left(left),
         .mid(mid),
         .right(right),
-		.move(move),
-		.i(i),
-		.j(j)
+		.move(move)
     );
 
     initial clk = 0;
