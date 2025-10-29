@@ -24,201 +24,155 @@ DEADENDS    : 9
 */
 //////////////////DO NOT MAKE ANY CHANGES ABOVE THIS LINE //////////////////
 
-wire [6:0] current_index;
-reg [2:0] state;
-reg [3:0] i;
-reg [3:0] j;
+reg [1:0] state;
+reg [1:0] dir;
+reg [6:0] k;
+reg [6:0] next_left;
+reg [6:0] next_right;
+reg [6:0] next_straight;
+reg [6:0] next_back;
+reg [6:0] current_index;
+reg [6:0] next_index;
+
 reg [1:0] visit_count [0:80];
 
-parameter rows = 9;
-parameter columns = 9;
-parameter IDLE = 0, FACING_NORTH = 1, FACING_SOUTH = 2, FACING_EAST = 3, FACING_WEST = 4, EXIT_FOUND = 5;
+parameter IDLE = 0, DECIDE = 1, MAKE_MOVE = 2;
+parameter NORTH = 0, SOUTH = 1, EAST = 2, WEST = 3;
 
 initial begin 
-	i = 4;
-	j = 8;
-	state = IDLE;
-end 
+    for (k = 0; k < 81; k = k + 1) begin
+        visit_count[k] = 0;
+    end
+end
+always @(*) begin
+    case (dir)
+        NORTH: begin
+            next_straight = current_index - 9;   
+            next_left     = current_index - 1;   
+            next_right    = current_index + 1;
+            next_back     = current_index + 9;   
+         end
+        
+        SOUTH: begin
+            next_straight = current_index + 9;   
+            next_left     = current_index + 1;  
+            next_right    = current_index - 1;  
+            next_back     = current_index - 9; 
+        end
 
-assign current_index = j * 9 + i;
+        EAST: begin
+            next_straight = current_index + 1;   
+            next_left     = current_index - 9;   
+            next_right    = current_index + 9;  
+            next_back     = current_index - 1;
+        end
 
-always @(posedge clk) begin 
-	if (rst_n == 0) begin
-		move <= 0;
-		state <= IDLE;
-	end
-	else begin 
-		case (state) 
-			IDLE: begin				
-				move <= 3'd1;
-				state <= FACING_NORTH;
-			end
-			FACING_NORTH: begin
-			   if (mid && left && right) begin
-					move <= 3'd4;
-					j <= j + 1;
-					state <= FACING_SOUTH;					
-				end
-				else if (!left && mid && right) begin
-					move <= 3'd2;
-					i <= i - 1;
-					visit_count[current_index + 9] <= visit_count[current_index + 9] + 1;
-					state <= FACING_WEST;
-				end
-				else if (mid && left && !right) begin
-					move <= 3'd3;
-					i <= i + 1;
-					visit_count[current_index + 9] <= visit_count[current_index + 9] + 1;
-					state <= FACING_EAST;
-				end				
-				else if (!left && mid && !right) begin
-					move <= 3'd2;
-					i <= i - 1;
-					visit_count[current_index + 9] <= visit_count[current_index + 9] + 1;
-					state <= FACING_WEST;
-				end
-				else if (left && !mid && !right) begin	
-					move <= 3'd3;
-					i <= i + 1;
-					visit_count[current_index + 9] <= visit_count[current_index + 9] + 1;
-					state <= FACING_EAST;					
-				end
-				else if (!left && !mid && right) begin
-					move <= 3'd2;
-					i <= i - 1;
-					visit_count[current_index + 9] <= visit_count[current_index + 9] + 1;			
-					state <= FACING_WEST;							
-				end
-				else begin
-					move <= 3'd1;
-					j <= j - 1;
-				end
-			end
-			FACING_SOUTH: begin
-				if (mid && left && right) begin
-					move <= 3'd4;
-					j <= j - 1;
-					state <= FACING_NORTH;
-				end
-				else if (!left && mid && right) begin
-					move <= 3'd2;
-					i <= i + 1;
-					visit_count[current_index - 9] <= visit_count[current_index - 9] + 1;
-					state <= FACING_EAST;
-				end
-				else if (mid && left && !right) begin
-					move <= 3'd3;
-					i <= i - 1;
-					visit_count[current_index - 9] <= visit_count[current_index - 9] + 1;
-					state <= FACING_WEST;
-				end				
-				else if (!left && mid && !right) begin
-					move <= 3'd2;
-					i <= i + 1;
-					visit_count[current_index - 9] <= visit_count[current_index - 9] + 1;
-					state <= FACING_EAST;
-				end
-				else if (left && !mid && !right) begin	
-					move <= 3'd3;
-					i <= i - 1;
-					visit_count[current_index - 9] <= visit_count[current_index - 9] + 1;
-					state <= FACING_WEST;
-				end
-				else if (!left && !mid && right) begin
-					move <= 3'd2;
-					i <= i + 1;
-					visit_count[current_index - 9] <= visit_count[current_index - 9] + 1;
-					state <= FACING_EAST;					
-				end
-				else begin
-					move <= 3'd1;
-					j <= j + 1;
-				end
-			end
-			FACING_EAST: begin
-				if (mid && left && right) begin
-					move <= 3'd4;
-					i <= i - 1;
-					state <= FACING_WEST;
-				end
-				else if (!left && mid && right) begin
-					move <= 3'd2;
-					j <= j - 1;
-					visit_count[current_index - 1] <= visit_count[current_index - 1] + 1;
-					state <= FACING_NORTH;					
-				end
-				else if (mid && left && !right) begin
-					move <= 3'd3;
-					j <= j + 1;
-					visit_count[current_index - 1] <= visit_count[current_index - 1] + 1;
-					state <= FACING_SOUTH;
-				end				
-				else if (!left && mid && !right) begin
-					move <= 3'd2;
-					j <= j - 1;
-					visit_count[current_index - 1] <= visit_count[current_index - 1] + 1;
-					state <= FACING_NORTH;
-				end
-				else if (left && !mid && !right) begin	
-					move <= 3'd3;
-					j <= j + 1;
-					visit_count[current_index - 1] <= visit_count[current_index - 1] + 1;
-					state <= FACING_SOUTH;					
-				end
-				else if (!left && !mid && right) begin
-					move <= 3'd2;
-					j <= j - 1;
-					visit_count[current_index - 1] <= visit_count[current_index - 1] + 1;
-					state <= FACING_NORTH;					
-				end
-				else begin
-					move <= 3'd1;
-					i <= i + 1;
-				end
-			end
-			FACING_WEST: begin				
-				if (mid && left && right) begin
-					move <= 3'd4;
-					i <= i + 1;
-					state <= FACING_EAST;
-				end
-				else if (!left && mid && right) begin
-					move <= 3'd2;
-					j <= j + 1;
-					visit_count[current_index + 1] <= visit_count[current_index + 1] + 1;
-					state <= FACING_SOUTH;
-				end
-				else if (mid && left && !right) begin
-					move <= 3'd3;
-					j <= j - 1;
-					visit_count[current_index + 1] <= visit_count[current_index + 1] + 1;
-					state <= FACING_NORTH;
-				end				
-				else if (!left && mid && !right) begin
-					move <= 3'd2;
-					j <= j + 1;
-					visit_count[current_index + 1] <= visit_count[current_index + 1] + 1;
-					state <= FACING_SOUTH;
-				end
-				else if (left && !mid && !right) begin	
-					move <= 3'd3;
-					j <= j - 1;
-					visit_count[current_index + 1] <= visit_count[current_index + 1] + 1;
-					state <= FACING_NORTH;
-				end
-				else if (!left && !mid && right) begin
-					move <= 3'd2;
-					j <= j + 1;
-					visit_count[current_index + 1] <= visit_count[current_index + 1] + 1;
-					state <= FACING_SOUTH;					
-				end
-				else begin
-					move <= 3'd1;
-					i <= i - 1;
-				end
-			end
-		endcase
-	end
+        WEST: begin
+            next_straight = current_index - 1;   
+            next_left     = current_index + 9;   
+            next_right    = current_index - 9;  
+            next_back     = current_index + 1; 
+        end
+    endcase
+end
+
+always @(posedge clk) begin
+    if (!rst_n) begin
+        move <= 0;
+        current_index <= 76;
+        state <= IDLE;
+        dir <= NORTH;
+    end
+    else begin 
+        case (state) 
+            IDLE: begin
+                move <= 0;
+                state <= DECIDE;
+            end
+            DECIDE: begin
+                visit_count[current_index] <= visit_count[current_index] + 1;
+                if (mid && left && right) begin
+                    move <= 4; 
+                    next_index <= next_back;
+                end
+                else if (mid && right && !left) begin
+                    move <= 2;
+                    next_index <= next_left;
+                end
+                else if (mid && left && !right) begin
+                    move <= 3;
+                    next_index <= next_right;
+                end
+                else if (left && right && !mid) begin
+                    move <= 1;
+                    next_index <= next_straight;
+                end
+                else if (right && !left && !mid) begin
+                    if (visit_count[next_left] == 0) begin
+                        move <= 2; 
+                        next_index <= next_left;
+                    end else begin
+                        move <= 1;
+                        next_index <= next_straight;
+                    end
+                end
+                else if (left && !right && !mid) begin
+                    if (visit_count[next_right] == 0) begin
+                        move <= 3; 
+                        next_index <= next_right;
+                    end else begin
+                        move <= 1; 
+                        next_index <= next_straight;
+                    end
+                end
+                else if (mid && !left && !right) begin
+                    if (visit_count[next_left] == 0) begin
+                        move <= 2; 
+                        next_index <= next_left;
+                    end else begin
+                        move <= 3;
+                        next_index <= next_right;
+                    end
+                end
+                state <= MAKE_MOVE;
+            end
+            MAKE_MOVE: begin
+                case (move)
+                    1: begin 
+                        current_index <= next_index;
+                    end
+                    2: begin 
+                        current_index <= next_index;                       
+                        case (dir)
+                            NORTH: dir <= WEST;
+                            WEST:  dir <= SOUTH;
+                            SOUTH: dir <= EAST;
+                            EAST:  dir <= NORTH;
+                        endcase
+                    end
+                    3: begin 
+                        current_index <= next_index;
+                        case (dir)
+                            NORTH: dir <= EAST;
+                            EAST:  dir <= SOUTH;
+                            SOUTH: dir <= WEST;
+                            WEST:  dir <= NORTH;
+                        endcase
+                    end
+                    4: begin 
+                        current_index <= next_index;
+                        case (dir)
+                            NORTH: dir <= SOUTH;
+                            SOUTH: dir <= NORTH;
+                            EAST:  dir <= WEST;
+                            WEST:  dir <= EAST;
+                        endcase
+                    end
+                endcase
+                state <= DECIDE;
+            end
+        endcase
+    end
 end
 //////////////////DO NOT MAKE ANY CHANGES BELOW THIS LINE //////////////////
 
