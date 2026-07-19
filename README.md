@@ -20,19 +20,30 @@ The EcoMender Bot theme simulates a robotic application in a chip design industr
 ### Task1:
 Task1:
 A. Frequency Scaling & PWM Generation.
-B. Color detection using Frequency Scaling.
+
+B. Interfacing Ultrasonic Sensor  through verilog.
+
 C. Pipelined RISCV CPU Design
 
 Task2:
+
 A. UART
-B. Path Planning algorithm.
+
+B. Implemented Tremaux Path Planning algorithm.
+
+C. Interfacing Temperature and Humidity Sensor through verilog.
 
 ## Learning Outcomes
 FPGA Design & Programming
+
 Verilog HDL
+
 Hardware Implementation of a Bot
+
 Assembling of components and sensors
+
 RISC-V Architecture
+
 Digital Design Principles
 
 
