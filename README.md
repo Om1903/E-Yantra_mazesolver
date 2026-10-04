@@ -23,7 +23,7 @@ A. Frequency Scaling & PWM Generation.
 
 B. Interfacing Ultrasonic Sensor  through verilog.
 
-C. Pipelined RISCV CPU Design
+C. Single Cycle RISCV CPU Design
 
 Task2:
 
